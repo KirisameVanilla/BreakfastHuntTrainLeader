@@ -1,4 +1,5 @@
 using System.Numerics;
+using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Lumina.Excel.GeneratedSheets;
 using OmenTools;
@@ -12,7 +13,7 @@ public class HuntMark
     public uint InstanceId { get; set; } = 0;
     public string Server => ImGuiWidget.豆豆柴[ServerIndex];
     public string Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value.Name.RawString;
-    public string Instance => InstanceId == 0 ? string.Empty : $"-{InstanceId.SEChar()}线";
+    public string Instance => InstanceId == 0 ? string.Empty : Plugin.Config.分线模板.Format("","",InstanceId.SEChar());
     public Vector2 Position { get; set; }
 
     public HuntMark(int index)
@@ -38,11 +39,17 @@ public class HuntMark
         agentMap->SetFlagMapMarker(TerritoryId, ExcelHelper.Zones[TerritoryId].Map.Row, Position.X, Position.Y);
         if (ExcelHelper.Worlds[DService.ClientState.LocalPlayer.CurrentWorld.Id].Name.RawString == Server)
         {
-            ChatHelper.Instance.SendMessage($"/sh 下一站-【本服】-<flag>{Instance}");
+            foreach (var command in Plugin.Config.RelayCommands)
+            {
+                ChatHelper.Instance.SendMessage(command + " " + Plugin.Config.同服扩散模板.Format(Instance));
+            }
         }
         else
         {
-            ChatHelper.Instance.SendMessage($"/sh 下一站-【{Server}】-<flag>{Instance}");
+            foreach (var command in Plugin.Config.RelayCommands)
+            {
+                ChatHelper.Instance.SendMessage(command + " " + Plugin.Config.跨服扩散模板.Format(Instance, Server));
+            }
         }
     }
 }
