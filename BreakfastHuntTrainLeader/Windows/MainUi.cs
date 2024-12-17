@@ -94,7 +94,11 @@ public class MainUi : Window, IDisposable
                 }
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"({mark.Position.X}, {mark.Position.Y})");
+                ImGui.Text($"({mark.Position.X:F1}, {mark.Position.Y:F1})");
+                if (ImGui.IsItemHovered())
+                    ImGui.SetTooltip("点击预览标点");
+                if (ImGui.IsItemClicked())
+                    mark.FlagMark();
 
                 ImGui.TableNextColumn();
                 if (ImGui.Button($"播报##{counter}"))

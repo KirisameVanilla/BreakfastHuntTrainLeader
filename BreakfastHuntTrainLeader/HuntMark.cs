@@ -31,11 +31,10 @@ public class HuntMark
         return true;
     }
 
-    public unsafe void Relay()
+    public void Relay()
     {
-        var agentMap = AgentMap.Instance();
-        agentMap->OpenMapByMapId(ExcelHelper.Zones[TerritoryId].Map.Row, TerritoryId);
-        agentMap->SetFlagMapMarker(TerritoryId, ExcelHelper.Zones[TerritoryId].Map.Row, Position.X, Position.Y);
+        if (DService.ClientState.LocalPlayer == null) return;
+        FlagMark();
         if (ExcelHelper.Worlds[DService.ClientState.LocalPlayer.CurrentWorld.Id].Name.RawString == Server)
         {
             foreach (var command in Plugin.Config.RelayCommands)
@@ -50,5 +49,12 @@ public class HuntMark
                 ChatHelper.Instance.SendMessage(command + " " + Plugin.Config.跨服扩散模板.Format(Instance, Server));
             }
         }
+    }
+
+    public unsafe void FlagMark()
+    {
+        var agentMap = AgentMap.Instance();
+        agentMap->SetFlagMapMarker(TerritoryId, ExcelHelper.Zones[TerritoryId].Map.Row, Position.X, Position.Y);
+        agentMap->OpenMapByMapId(ExcelHelper.Zones[TerritoryId].Map.Row, TerritoryId);
     }
 }
