@@ -18,6 +18,7 @@
 
     <ItemGroup>
 	  <PackageReference Include="DalamudPackager" Version="2.1.13" MakeZip="true" />
+	  <ProjectReference Include="..\OmenTools\OmenTools.csproj" />
         
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
@@ -29,6 +30,14 @@
         </Reference>
         <Reference Include="ImGui.NET">
             <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Lumina">
+          <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Lumina.Excel">
+          <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
             <Private>false</Private>
         </Reference>
         <Reference Include="Newtonsoft.Json">

@@ -3,6 +3,7 @@ using System;
 using BreakfastHuntTrainLeader.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
+using OmenTools;
 
 namespace BreakfastHuntTrainLeader;
 
@@ -11,26 +12,26 @@ public class Plugin : IDalamudPlugin
     internal MainUi MainUi { get; init; }
     public readonly WindowSystem WindowSystem = new("BreakfastHuntTrainLeader");
     private const string Command = "/hunhuan";
-
+    internal static Configuration Config { get; set; } = null!;
+    public IDalamudPluginInterface PluginInterface { get; }
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
-        pluginInterface.Create<Service>();
+        PluginInterface = pluginInterface;
         try
         {
-            Service.Config = Service.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Config = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         }
         catch
         {
-            Service.Config = new Configuration();
-            Service.Config.SaveConfig();
+            Config = new Configuration();
+            Config.SaveConfig();
         }
 
         MainUi = new MainUi();
 
         WindowSystem.AddWindow(MainUi);
-
-        Service.CommandManager.AddHandler(Command, new CommandInfo(OnCommand)
+        DService.Command.AddHandler(Command, new CommandInfo(OnCommand)
         {
             HelpMessage = """
                           Open main window.
@@ -40,8 +41,8 @@ public class Plugin : IDalamudPlugin
 
         pluginInterface.UiBuilder.Draw += DrawUi;
 
-        Service.PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
-        Service.PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
+        PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
+        PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
 
     }
 
@@ -57,6 +58,4 @@ public class Plugin : IDalamudPlugin
     private void DrawUi() => WindowSystem.Draw();
     public void ToggleMainUi() => MainUi.Toggle();
     private void OnCommand(string command, string args) => ToggleMainUi();
-
-
 }
