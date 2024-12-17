@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Dalamud.Configuration;
+using OmenTools;
 
 namespace BreakfastHuntTrainLeader;
 
@@ -8,7 +9,7 @@ namespace BreakfastHuntTrainLeader;
 public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
-    public void SaveConfig() => Service.PluginInterface.SavePluginConfig(this);
+    public void SaveConfig() => DService.PI.SavePluginConfig(this);
 
     public List<HuntMark> Marks { get; set; } = [];
 }

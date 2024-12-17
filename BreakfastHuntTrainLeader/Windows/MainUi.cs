@@ -21,71 +21,77 @@ public class MainUi : Window, IDisposable
     }
 
     public void Dispose() { }
-
+    private bool selected = false;
     public override void Draw()
     {
         int counter = 0;
-        ImGui.BeginTable("Marks", 2);
-        ImGui.TableSetupColumn("序号");
-        ImGui.TableSetupColumn("服务器");
-        ImGui.TableSetupColumn("区域");
-        ImGui.TableSetupColumn("坐标");
-        ImGui.TableSetupColumn("播报");
-        ImGui.TableHeadersRow();
-        foreach (var mark in Plugin.Config.Marks)
+        if (ImGui.BeginTable("Marks", 5))
         {
+            ImGui.TableSetupColumn("序号", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("服务器", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("区域", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("坐标", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("播报", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableHeadersRow();
+            var marks = Plugin.Config.Marks;
+            foreach (var mark in marks)
+            {
+                ImGui.TableNextRow();
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"{counter + 1}");
+
+                ImGui.TableNextColumn();
+                ImGui.Text(mark.Server);
+
+                ImGui.TableNextColumn();
+                ImGui.Text(mark.Territory);
+
+                ImGui.TableNextColumn();
+                ImGui.Text($"({mark.Position.X}, {mark.Position.Y})");
+
+                ImGui.TableNextColumn();
+                if (ImGui.Button($"播报##{counter}")) { }
+
+                if (ImGui.Button($"删除##{counter}"))
+                {
+                    Plugin.Config.Marks.RemoveAt(counter);
+                    Plugin.Config.SaveConfig();
+                    return;
+                }
+
+                counter++;
+            }
+
             ImGui.TableNextRow();
 
             ImGui.TableNextColumn();
-            ImGui.Text($"{counter+1}");
+
+            ImGui.Text($"{counter + 1}");
+            ImGui.TableNextColumn();
+
+            selected = ImGuiWidget.ServerSelectCombo(ref selectedServer) || selected;
+            ImGui.TableNextColumn();
 
             ImGui.TableNextColumn();
-            ImGui.Text(mark.Server);
 
             ImGui.TableNextColumn();
-            ImGui.Text(mark.Territory.ExtractPlaceName());
 
-            ImGui.TableNextColumn();
-            ImGui.Text($"({mark.Position.X}, {mark.Position.Y})");
-
-            ImGui.TableNextColumn();
-            if (ImGui.Button($"播报{counter}"))
+            using (ImRaii.Disabled(!selected))
             {
-                
-            }
-            if (ImGui.Button($"删除{counter}"))
-            {
-                Plugin.Config.Marks.RemoveAt(counter);
-                Plugin.Config.SaveConfig();
-            }
-            counter++;
-        }
-        ImGui.TableNextRow();
-
-        ImGui.TableNextColumn();
-        ImGui.TableNextColumn();
-        ImGui.Text($"{counter + 1}");
-
-        ImGui.TableNextColumn();
-        ImGuiWidget.ServerSelectCombo(ref selectedServer);
-
-        ImGui.TableNextColumn();
-
-        ImGui.TableNextColumn();
-
-        ImGui.TableNextColumn();
-        using (ImRaii.Disabled(selectedServer==0))
-        {
-            if (ImGui.Button("添加"))
-            {
-                var newMark = new HuntMark(selectedServer);
-                if (!newMark.InitByFlag()) {}
-                else
+                if (ImGui.Button("添加"))
                 {
-                    Plugin.Config.Marks.Add(newMark);
-                    Plugin.Config.SaveConfig();
+                    var newMark = new HuntMark(selectedServer);
+                    if (!newMark.InitByFlag()) { }
+                    else
+                    {
+                        Plugin.Config.Marks.Add(newMark);
+                        Plugin.Config.SaveConfig();
+                        selected = false;
+                    }
                 }
             }
+            ImGui.EndTable();
         }
         
     }

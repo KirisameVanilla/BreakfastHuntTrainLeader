@@ -8,7 +8,7 @@ public class HuntMark
     public int ServerIndex { get; set; } = 0;
     public uint TerritoryId { get; set; } = 0;
     public string Server => ImGuiWidget.豆豆柴[ServerIndex];
-    public TerritoryType Territory => ExcelHelper.Zones[TerritoryId];
+    public string Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value.Name.RawString;
     public Vector2 Position { get; set; }
 
     public HuntMark(int index)

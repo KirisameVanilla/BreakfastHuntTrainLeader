@@ -31,6 +31,7 @@ public class Plugin : IDalamudPlugin
         MainUi = new MainUi();
 
         WindowSystem.AddWindow(MainUi);
+        DService.Init(PluginInterface);
         DService.Command.AddHandler(Command, new CommandInfo(OnCommand)
         {
             HelpMessage = """
@@ -39,7 +40,7 @@ public class Plugin : IDalamudPlugin
                           """
         });
 
-        pluginInterface.UiBuilder.Draw += DrawUi;
+        PluginInterface.UiBuilder.Draw += DrawUi;
 
         PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
@@ -51,7 +52,7 @@ public class Plugin : IDalamudPlugin
         WindowSystem.RemoveAllWindows();
 
         MainUi.Dispose();
-        Service.CommandManager.RemoveHandler(Command);
+        DService.Command.RemoveHandler(Command);
         GC.SuppressFinalize(this);
     }
 
