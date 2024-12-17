@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
@@ -9,6 +10,7 @@ namespace BreakfastHuntTrainLeader.Windows;
 public class MainUi : Window, IDisposable
 {
     private int selectedServer = 0;
+    private int instanceIdInput = 0;
     public MainUi()
         : base("BreakfastHuntTrainLeader##MainUi", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
@@ -24,15 +26,16 @@ public class MainUi : Window, IDisposable
     public override void Draw()
     {
         int counter = 0;
-        if (ImGui.BeginTable("Marks", 5))
+        if (ImGui.BeginTable("Marks", 6))
         {
             ImGui.TableSetupColumn("序号", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("服务器", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableSetupColumn("区域", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("分线", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("坐标", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("播报", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableHeadersRow();
-            var marks = Plugin.Config.Marks;
+            List<HuntMark> marks = [.. Plugin.Config.Marks];
             foreach (var mark in marks)
             {
                 ImGui.TableNextRow();
@@ -47,6 +50,13 @@ public class MainUi : Window, IDisposable
                 ImGui.Text(mark.Territory);
 
                 ImGui.TableNextColumn();
+                if (ImGui.InputInt($"##分线{counter}", ref instanceIdInput))
+                {
+                    Plugin.Config.Marks[counter].InstanceId = (uint)instanceIdInput;
+                    Plugin.Config.SaveConfig();
+                }
+
+                ImGui.TableNextColumn();
                 ImGui.Text($"({mark.Position.X}, {mark.Position.Y})");
 
                 ImGui.TableNextColumn();
@@ -59,7 +69,6 @@ public class MainUi : Window, IDisposable
                 {
                     Plugin.Config.Marks.RemoveAt(counter);
                     Plugin.Config.SaveConfig();
-                    return;
                 }
                 counter++;
             }

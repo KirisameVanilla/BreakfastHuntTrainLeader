@@ -9,8 +9,10 @@ public class HuntMark
 {
     public int ServerIndex { get; set; } = 0;
     public uint TerritoryId { get; set; } = 0;
+    public uint InstanceId { get; set; } = 0;
     public string Server => ImGuiWidget.豆豆柴[ServerIndex];
     public string Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value.Name.RawString;
+    public string Instance => InstanceId == 0 ? string.Empty : $"-{InstanceId.SEChar()}线";
     public Vector2 Position { get; set; }
 
     public HuntMark(int index)
@@ -36,11 +38,11 @@ public class HuntMark
         agentMap->SetFlagMapMarker(TerritoryId, ExcelHelper.Zones[TerritoryId].Map.Row, Position.X, Position.Y);
         if (ExcelHelper.Worlds[DService.ClientState.LocalPlayer.CurrentWorld.Id].Name.RawString == Server)
         {
-            ChatHelper.Instance.SendMessage($"/sh 下一站-【本服】-<flag>");
+            ChatHelper.Instance.SendMessage($"/sh 下一站-【本服】-<flag>{Instance}");
         }
         else
         {
-            ChatHelper.Instance.SendMessage($"/sh 下一站-【{Server}】-<flag>");
+            ChatHelper.Instance.SendMessage($"/sh 下一站-【{Server}】-<flag>{Instance}");
         }
     }
 }
