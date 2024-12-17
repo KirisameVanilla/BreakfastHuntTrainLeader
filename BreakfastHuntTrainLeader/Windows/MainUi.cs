@@ -94,7 +94,7 @@ public class MainUi : Window, IDisposable
                 }
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"({mark.Position.X:F1}, {mark.Position.Y:F1})");
+                ImGui.Text($"({mark.MapPos.X:F1}, {mark.MapPos.Y:F1})");
                 if (ImGui.IsItemHovered())
                     ImGui.SetTooltip("点击预览标点");
                 if (ImGui.IsItemClicked())

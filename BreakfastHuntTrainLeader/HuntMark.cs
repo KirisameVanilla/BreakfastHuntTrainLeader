@@ -14,6 +14,7 @@ public class HuntMark
     public string Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value.Name.RawString;
     public string Instance => InstanceId == 0 ? string.Empty : Plugin.Config.分线模板.Format("","",InstanceId.SEChar());
     public Vector2 Position { get; set; }
+    public Vector2 MapPos => HelpersOm.WorldToMap(Position, ExcelHelper.Zones[TerritoryId].Map.Value);
 
     public HuntMark(int index)
     {
