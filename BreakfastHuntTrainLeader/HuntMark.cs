@@ -1,7 +1,6 @@
 using System.Numerics;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using Lumina.Excel.GeneratedSheets;
 using OmenTools;
 using OmenTools.Helpers;
 
@@ -11,7 +10,7 @@ public class HuntMark
     public int ServerIndex { get; set; } = 0;
     public uint TerritoryId { get; set; } = 0;
     public uint InstanceId { get; set; } = 0;
-    public string Server => ImGuiWidget.豆豆柴[ServerIndex];
+    public string Server => ImGuiWidget.大区[Plugin.Config.大区名][ServerIndex];
     public string Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value.Name.RawString;
     public string Instance => InstanceId == 0 ? string.Empty : Plugin.Config.分线模板.Format("","",InstanceId.SEChar());
     public Vector2 Position { get; set; }

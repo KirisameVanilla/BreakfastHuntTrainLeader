@@ -4,7 +4,6 @@ using ImGuiNET;
 using OmenTools.Helpers;
 using OmenTools.ImGuiOm;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Linq;
 
 namespace BreakfastHuntTrainLeader;

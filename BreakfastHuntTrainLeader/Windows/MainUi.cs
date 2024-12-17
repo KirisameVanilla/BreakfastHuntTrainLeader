@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
-using OmenTools.ImGuiOm;
+using OmenTools.Helpers;
 
 namespace BreakfastHuntTrainLeader.Windows;
 
 public class MainUi : Window, IDisposable
 {
     private int selectedServer = 0;
+    private int selectedDataCenter = 0;
     private int instanceIdInput = 0;
     private bool selected = false;
     private string 同服扩散模板 = Plugin.Config.同服扩散模板;
@@ -50,6 +50,8 @@ public class MainUi : Window, IDisposable
 
     private void DrawMarks()
     {
+        if (ImGui.Checkbox("编辑模式", ref Plugin.Config.编辑模式))
+            Plugin.Config.SaveConfig();
         var counter = 0;
         if (ImGui.BeginTable("Marks", 6, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
         {
@@ -81,11 +83,14 @@ public class MainUi : Window, IDisposable
                 ImGui.TableNextColumn();
                 instanceIdInput = (int)mark.InstanceId;
                 ImGui.Text($"{mark.InstanceId}线");
-                ImGui.SameLine();
-                if (ImGui.InputInt($"##分线{counter}", ref instanceIdInput))
+                if (Plugin.Config.编辑模式)
                 {
-                    Plugin.Config.Marks[counter].InstanceId = (uint)instanceIdInput;
-                    Plugin.Config.SaveConfig();
+                    ImGui.SameLine();
+                    if (ImGui.InputInt($"##分线{counter}", ref instanceIdInput))
+                    {
+                        Plugin.Config.Marks[counter].InstanceId = (uint)instanceIdInput;
+                        Plugin.Config.SaveConfig();
+                    }
                 }
 
                 ImGui.TableNextColumn();
@@ -103,27 +108,32 @@ public class MainUi : Window, IDisposable
                 }
                 counter++;
             }
-
-            ImGui.TableNextRow();
-            ImGui.TableNextColumn();
-            ImGui.Text($"{counter + 1}");
-            ImGui.TableNextColumn();
-            selected = ImGuiWidget.ServerSelectCombo(ref selectedServer, Plugin.Config.大区名) || selected;
-            ImGui.TableNextColumn();
-            ImGui.TableNextColumn();
-            ImGui.TableNextColumn();
-            ImGui.TableNextColumn();
-            using (ImRaii.Disabled(!selected))
+            if (Plugin.Config.编辑模式)
             {
-                if (ImGui.Button("添加"))
+                ImGui.TableNextRow();
+                ImGui.TableNextColumn();
+                ImGui.Text($"{counter + 1}");
+                ImGui.TableNextColumn();
+                selected = ImGuiWidget.ServerSelectCombo(ref selectedServer, Plugin.Config.大区名) || selected;
+                ImGui.TableNextColumn();
+                ImGui.TableNextColumn();
+                ImGui.TableNextColumn();
+                ImGui.TableNextColumn();
+                using (ImRaii.Disabled(!selected))
                 {
-                    var newMark = new HuntMark(selectedServer);
-                    if (!newMark.InitByFlag()) { }
-                    else
+                    if (ImGui.Button("添加"))
                     {
-                        Plugin.Config.Marks.Add(newMark);
-                        Plugin.Config.SaveConfig();
-                        selected = false;
+                        var newMark = new HuntMark(selectedServer);
+                        if (!newMark.InitByFlag())
+                        {
+                            NotifyHelper.NotificationError("添加失败，当前未设置flag", "BreakfastHuntTrainLeader");
+                        }
+                        else
+                        {
+                            Plugin.Config.Marks.Add(newMark);
+                            Plugin.Config.SaveConfig();
+                            selected = false;
+                        }
                     }
                 }
             }
@@ -136,10 +146,11 @@ public class MainUi : Window, IDisposable
         ImGui.Text("请选择大区:");
         using (ImRaii.PushIndent())
         {
-            if (ImGuiWidget.DataCenterSelectCombo(ref selectedServer, out var 大区名))
+            if (ImGuiWidget.DataCenterSelectCombo(ref selectedDataCenter, out var 大区名))
             {
                 Plugin.Config.大区名 = 大区名;
                 Plugin.Config.Marks.Clear();
+                selectedServer = 0;
                 Plugin.Config.SaveConfig();
             }
         }
