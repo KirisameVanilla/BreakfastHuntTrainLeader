@@ -1,0 +1,21 @@
+{
+    "Author": "KirisameVanilla",
+    "Name": "BreakfastHuntTrainLeader",
+    "InternalName": "BreakfastHuntTrainLeader",
+    "Description": "早车小工具。",
+    "ApplicableVersion": "any",
+    "RepoUrl": "https://github.com/KirisameVanilla/BreakfastHuntTrainLeader",
+    "Tags": [
+        "hunt"
+    ],
+    "CategoryTags": [
+        "ui"
+    ],
+    "DalamudApiLevel": 10,
+    "LoadRequiredState": 0,
+    "LoadSync": false,
+    "CanUnloadAsync": false,
+    "LoadPriority": 0,
+    "Punchline": "早车小工具。",
+    "AcceptsFeedback": true
+}
