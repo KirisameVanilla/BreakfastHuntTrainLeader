@@ -1,6 +1,8 @@
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Lumina.Excel.GeneratedSheets;
+using OmenTools;
+using OmenTools.Helpers;
 
 namespace BreakfastHuntTrainLeader;
 public class HuntMark
@@ -25,5 +27,20 @@ public class HuntMark
         Position = new(agentMap->FlagMapMarker.XFloat, agentMap->FlagMapMarker.YFloat);
         TerritoryId = agentMap->FlagMapMarker.TerritoryId;
         return true;
+    }
+
+    public unsafe void Relay()
+    {
+        var agentMap = AgentMap.Instance();
+        agentMap->OpenMapByMapId(ExcelHelper.Zones[TerritoryId].Map.Row, TerritoryId);
+        agentMap->SetFlagMapMarker(TerritoryId, ExcelHelper.Zones[TerritoryId].Map.Row, Position.X, Position.Y);
+        if (ExcelHelper.Worlds[DService.ClientState.LocalPlayer.CurrentWorld.Id].Name.RawString == Server)
+        {
+            ChatHelper.Instance.SendMessage($"/sh 下一站-【本服】-<flag>");
+        }
+        else
+        {
+            ChatHelper.Instance.SendMessage($"/sh 下一站-【{Server}】-<flag>");
+        }
     }
 }
