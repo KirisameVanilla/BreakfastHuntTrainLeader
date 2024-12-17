@@ -31,7 +31,7 @@ public class MainUi : Window, IDisposable
             ImGui.TableSetupColumn("序号", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("服务器", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableSetupColumn("区域", ImGuiTableColumnFlags.WidthFixed);
-            ImGui.TableSetupColumn("分线", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("分线", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableSetupColumn("坐标", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("播报", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableHeadersRow();
@@ -50,6 +50,9 @@ public class MainUi : Window, IDisposable
                 ImGui.Text(mark.Territory);
 
                 ImGui.TableNextColumn();
+                instanceIdInput = (int)mark.InstanceId;
+                ImGui.Text($"{mark.InstanceId}线");
+                ImGui.SameLine();
                 if (ImGui.InputInt($"##分线{counter}", ref instanceIdInput))
                 {
                     Plugin.Config.Marks[counter].InstanceId = (uint)instanceIdInput;
