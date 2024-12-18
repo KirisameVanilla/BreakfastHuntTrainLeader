@@ -4,6 +4,7 @@ using BreakfastHuntTrainLeader.Windows;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using OmenTools;
+using OmenTools.Helpers;
 
 namespace BreakfastHuntTrainLeader;
 
@@ -18,6 +19,7 @@ public class Plugin : IDalamudPlugin
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
         PluginInterface = pluginInterface;
+        DService.Init(PluginInterface);
         try
         {
             Config = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -26,12 +28,12 @@ public class Plugin : IDalamudPlugin
         {
             Config = new Configuration();
             Config.SaveConfig();
+            NotifyHelper.NotificationError("配置文件加载失败，已重置配置文件。", "BreakfastHuntTrainLeader");
         }
 
         MainUi = new MainUi();
 
         WindowSystem.AddWindow(MainUi);
-        DService.Init(PluginInterface);
         DService.Command.AddHandler(Command, new CommandInfo(OnCommand)
         {
             HelpMessage = """
