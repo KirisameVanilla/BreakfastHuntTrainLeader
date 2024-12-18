@@ -70,23 +70,19 @@ public class ImGuiWidget
 
     public static bool SwapButtons<T>(int index, List<T> list)
     {
-        ImGui.PushFont(UiBuilder.IconFont);
         using (ImRaii.Disabled(index < 1))
-            if (ImGuiOm.ButtonIcon($"##moveUp{index}", FontAwesomeIcon.ArrowUp))
+            if (ImGuiOm.ButtonIcon($"##moveUp{index}", FontAwesomeIcon.ArrowUp, useStaticFont:true))
             {
                 list.Swap(index, index - 1);
-                ImGui.PopFont();
                 return true;
             }
         ImGui.SameLine();
         using (ImRaii.Disabled(index >= Plugin.Config.Marks.Count - 1))
-            if (ImGuiOm.ButtonIcon($"##moveDown{index}", FontAwesomeIcon.ArrowDown))
+            if (ImGuiOm.ButtonIcon($"##moveDown{index}", FontAwesomeIcon.ArrowDown, useStaticFont:true))
             {
                 list.Swap(index, index + 1);
-                ImGui.PopFont();
                 return true;
             }
-        ImGui.PopFont();
         return false;
     }
 

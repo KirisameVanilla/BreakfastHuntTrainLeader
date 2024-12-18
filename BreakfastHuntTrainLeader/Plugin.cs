@@ -28,7 +28,7 @@ public class Plugin : IDalamudPlugin
         {
             Config = new Configuration();
             Config.SaveConfig();
-            NotifyHelper.NotificationError("配置文件加载失败，已重置配置文件。", "BreakfastHuntTrainLeader");
+            NotifyHelperOm.NotificationError("配置文件加载失败，已重置配置文件。", "BreakfastHuntTrainLeader");
         }
 
         MainUi = new MainUi();
