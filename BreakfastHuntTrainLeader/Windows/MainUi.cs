@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using OmenTools.Helpers;
+using OmenTools.ImGuiOm;
 
 namespace BreakfastHuntTrainLeader.Windows;
 
 public class MainUi : Window, IDisposable
 {
-    private int selectedServer = 0;
-    private int selectedDataCenter = 0;
-    private int instanceIdInput = 0;
-    private bool selected = false;
-    private string 同服扩散模板 = Plugin.Config.同服扩散模板;
-    private string 跨服扩散模板 = Plugin.Config.跨服扩散模板;
-    private string 分线模板 = Plugin.Config.分线模板;
+    private int  selectedServer     = 0;
+    private int  selectedDataCenter = 0;
+    private int  instanceIdInput    = 0;
+    private bool selected           = false;
     public MainUi()
         : base("BreakfastHuntTrainLeader##MainUi", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
@@ -94,12 +93,14 @@ public class MainUi : Window, IDisposable
                 }
 
                 ImGui.TableNextColumn();
-                ImGui.Text($"({mark.MapPos.X:F1}, {mark.MapPos.Y:F1})");
-                if (ImGui.IsItemClicked())
+                if (ImGuiOm.ButtonIcon($"{counter}FlagMark", FontAwesomeIcon.Flag, useStaticFont:true))
                     if (mark.FlagMark())
                         HelpersOm.NotificationSuccess("已标记", "BreakfastHuntTrainLeader");
                     else
                         HelpersOm.NotificationError("标记失败", "BreakfastHuntTrainLeader");
+
+                ImGui.SameLine();
+                ImGui.Text($"({mark.MapPos.X:F1}, {mark.MapPos.Y:F1})");
 
                 ImGui.TableNextColumn();
                 if (ImGui.Button($"播报##{counter}"))
@@ -170,12 +171,9 @@ public class MainUi : Window, IDisposable
             ImGuiWidget.HelpMarker("{0}: 分线显示控制。若怪物未设置分线，即为0线，则会不显示");
             using (ImRaii.PushIndent())
             {
-                ImGui.InputText("##同服S怪", ref 同服扩散模板, 256);
+                ImGui.InputText("##同服S怪", ref Plugin.Config.同服扩散模板, 256);
                 if (ImGui.IsItemDeactivatedAfterEdit())
-                {
-                    Plugin.Config.同服扩散模板 = 同服扩散模板;
                     Plugin.Config.SaveConfig();
-                }
             }
 
             ImGui.Text("跨服S怪:");
@@ -185,12 +183,9 @@ public class MainUi : Window, IDisposable
                                """);
             using (ImRaii.PushIndent())
             {
-                ImGui.InputText("##跨服S怪", ref 跨服扩散模板, 256);
+                ImGui.InputText("##跨服S怪", ref Plugin.Config.跨服扩散模板, 256);
                 if (ImGui.IsItemDeactivatedAfterEdit())
-                {
-                    Plugin.Config.跨服扩散模板 = 跨服扩散模板;
                     Plugin.Config.SaveConfig();
-                }
             }
 
             ImGui.Text("分线模板:");
@@ -199,12 +194,9 @@ public class MainUi : Window, IDisposable
                                    """);
             using (ImRaii.PushIndent())
             {
-                ImGui.InputText("##分线模板", ref 分线模板, 256);
+                ImGui.InputText("##分线模板", ref Plugin.Config.分线模板, 256);
                 if (ImGui.IsItemDeactivatedAfterEdit())
-                {
-                    Plugin.Config.分线模板 = 分线模板;
                     Plugin.Config.SaveConfig();
-                }
             }
         }
     }

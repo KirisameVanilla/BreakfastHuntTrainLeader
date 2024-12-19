@@ -15,6 +15,7 @@ public class Plugin : IDalamudPlugin
     private const string Command = "/hunhuan";
     internal static Configuration Config { get; set; } = null!;
     public IDalamudPluginInterface PluginInterface { get; }
+    public static TaskHelper Tasks = new();
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
@@ -46,11 +47,11 @@ public class Plugin : IDalamudPlugin
 
         PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
-
     }
 
     public void Dispose()
     {
+        Tasks.Dispose();
         WindowSystem.RemoveAllWindows();
 
         MainUi.Dispose();

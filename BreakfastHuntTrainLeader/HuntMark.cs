@@ -53,7 +53,9 @@ public class HuntMark
         if (agentMap == null) return false;
         if (!agentMap->IsAgentActive() || agentMap->SelectedMapId != MapId)
             agentMap->OpenMap(MapId, TerritoryId);
-        agentMap->SetFlagMapMarker(TerritoryId, MapId, new Vector3(Position.X, 0f, Position.Y));
+        Plugin.Tasks.Enqueue(() => agentMap->IsAgentActive() && agentMap->SelectedMapId == MapId);
+        Plugin.Tasks.DelayNext(100);
+        Plugin.Tasks.Enqueue(() => agentMap->SetFlagMapMarker(TerritoryId, MapId, new Vector3(Position.X, 0f, Position.Y)));
         return true;
     }
 }
