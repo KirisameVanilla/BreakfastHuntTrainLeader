@@ -10,17 +10,16 @@ namespace BreakfastHuntTrainLeader;
 
 public class Plugin : IDalamudPlugin
 {
-    internal MainUi MainUi { get; init; }
-    public readonly WindowSystem WindowSystem = new("BreakfastHuntTrainLeader");
+    private MainUi MainUi { get; init; }
+    private readonly WindowSystem windowSystem = new("BreakfastHuntTrainLeader");
     private const string Command = "/hunhuan";
-    internal static Configuration Config { get; set; } = null!;
-    public IDalamudPluginInterface PluginInterface { get; }
+
+    public static Configuration Config { get; set; } = null!;
     public static TaskHelper Tasks = new();
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
-        PluginInterface = pluginInterface;
-        DService.Init(PluginInterface);
+        DService.Init(pluginInterface);
         try
         {
             Config = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
@@ -33,8 +32,8 @@ public class Plugin : IDalamudPlugin
         }
 
         MainUi = new MainUi();
+        windowSystem.AddWindow(MainUi);
 
-        WindowSystem.AddWindow(MainUi);
         DService.Command.AddHandler(Command, new CommandInfo(OnCommand)
         {
             HelpMessage = """
@@ -43,23 +42,21 @@ public class Plugin : IDalamudPlugin
                           """
         });
 
-        PluginInterface.UiBuilder.Draw += DrawUi;
-
-        PluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
-        PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
+        pluginInterface.UiBuilder.Draw += DrawUi;
+        pluginInterface.UiBuilder.OpenConfigUi += ToggleMainUi;
+        pluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
     }
 
     public void Dispose()
     {
         Tasks.Dispose();
-        WindowSystem.RemoveAllWindows();
-
+        windowSystem.RemoveAllWindows();
         MainUi.Dispose();
         DService.Command.RemoveHandler(Command);
         GC.SuppressFinalize(this);
     }
 
-    private void DrawUi() => WindowSystem.Draw();
+    private void DrawUi() => windowSystem.Draw();
     public void ToggleMainUi() => MainUi.Toggle();
     private void OnCommand(string command, string args) => ToggleMainUi();
 }
