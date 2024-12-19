@@ -95,10 +95,11 @@ public class MainUi : Window, IDisposable
 
                 ImGui.TableNextColumn();
                 ImGui.Text($"({mark.MapPos.X:F1}, {mark.MapPos.Y:F1})");
-                if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip("点击预览标点");
                 if (ImGui.IsItemClicked())
-                    mark.FlagMark();
+                    if (mark.FlagMark())
+                        HelpersOm.NotificationSuccess("已标记", "BreakfastHuntTrainLeader");
+                    else
+                        HelpersOm.NotificationError("标记失败", "BreakfastHuntTrainLeader");
 
                 ImGui.TableNextColumn();
                 if (ImGui.Button($"播报##{counter}"))

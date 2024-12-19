@@ -10,6 +10,7 @@ public class ExcelHelper
 {
     public static Dictionary<uint, TerritoryType> Zones => zones.Value;
     public static Dictionary<uint, World> Worlds => worlds.Value;
+    public static Dictionary<uint, Map> Maps => maps.Value;
 
     #region Lazy
 
@@ -29,6 +30,11 @@ public class ExcelHelper
                                          !x.Name.RawString.Contains('_'))
                              .Where(x => x.DataCenter.Value.Region != 5 ||
                                          (x.RowId > 1000 && x.RowId != 1200))
+                             .ToDictionary(x => x.RowId, x => x));
+
+    private static readonly Lazy<Dictionary<uint, Map>> maps =
+        new(() => LuminaCache.Get<Map>()
+                             .Where(x => x.PlaceName.Row > 0)
                              .ToDictionary(x => x.RowId, x => x));
 
     #endregion
