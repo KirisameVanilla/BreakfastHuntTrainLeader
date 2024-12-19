@@ -130,7 +130,7 @@ public class MainUi : Window, IDisposable
                         var newMark = new HuntMark(selectedServer);
                         if (!newMark.InitByFlag())
                         {
-                            NotifyHelperOm.NotificationError("添加失败，当前未设置flag", "BreakfastHuntTrainLeader");
+                            HelpersOm.NotificationError("添加失败，当前未设置flag", "BreakfastHuntTrainLeader");
                         }
                         else
                         {
