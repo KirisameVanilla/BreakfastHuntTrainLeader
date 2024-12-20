@@ -38,13 +38,6 @@ public class ImGuiWidget
     };
 
     public static bool ServerSelectCombo(ref int selected, string 大区名 = "豆豆柴") => ImGui.Combo("##选择服务器", ref selected, 大区[大区名].Values.ToArray(), 大区[大区名].Count);
-    public static bool DataCenterSelectCombo(ref int selected, out string 大区名)
-    {
-        var 大区列表 = 大区.Keys.ToArray();
-        var res = ImGui.Combo("##选择大区", ref selected, 大区列表, 大区列表.Length);
-        大区名 = 大区列表[selected];
-        return res;
-    }
 
     private static readonly HashSet<string> SupportedRelayCommands = ["/sh", "/y", "/b", "/p", "/fc", "/cwl1", "/cwl2", "/cwl3", "/cwl4", "/cwl5", "/cwl6", "/cwl7", "/cwl8", "/ls1", "/ls2", "/ls3", "/ls4", "/ls5", "/ls6", "/ls7", "/ls8"];
 

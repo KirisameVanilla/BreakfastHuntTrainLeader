@@ -5,6 +5,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using OmenTools;
 using OmenTools.Helpers;
 using OmenTools.ImGuiOm;
 
@@ -13,9 +14,9 @@ namespace BreakfastHuntTrainLeader.Windows;
 public class MainUi : Window, IDisposable
 {
     private int  selectedServer     = 0;
-    private int  selectedDataCenter = 0;
     private int  instanceIdInput    = 0;
     private bool selected           = false;
+    private bool initialized        = false;
     public MainUi()
         : base("BreakfastHuntTrainLeader##MainUi", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
@@ -29,6 +30,17 @@ public class MainUi : Window, IDisposable
     public void Dispose() { }
     public override void Draw()
     {
+        if (!initialized)
+        {
+            var pc = DService.ClientState.LocalPlayer;
+            if (pc == null || pc.CurrentWorld.GameData == null || pc.CurrentWorld.GameData.DataCenter.Value == null) return;
+            var dataCenter = pc.CurrentWorld.GameData.DataCenter.Value.Name.RawString;
+            Plugin.Config.大区名 = dataCenter;
+            Plugin.Config.SaveConfig();
+            initialized = true;
+        }
+
+        using var disabled = ImRaii.Disabled(Plugin.Config.大区名 != "莫古力" && Plugin.Config.大区名 != "豆豆柴");
         if (ImGui.BeginTabBar("##tabBar"))
         {
             if (ImGui.BeginTabItem("怪物列表"))
@@ -80,16 +92,18 @@ public class MainUi : Window, IDisposable
                 ImGui.Text(mark.Territory);
 
                 ImGui.TableNextColumn();
-                instanceIdInput = (int)mark.InstanceId;
-                ImGui.Text($"{mark.InstanceId}线");
                 if (Plugin.Config.编辑模式)
                 {
-                    ImGui.SameLine();
+                    instanceIdInput = (int)mark.InstanceId;
                     if (ImGui.InputInt($"##分线{counter}", ref instanceIdInput))
                     {
                         Plugin.Config.Marks[counter].InstanceId = (uint)instanceIdInput;
                         Plugin.Config.SaveConfig();
                     }
+                }
+                else
+                {
+                    ImGui.Text($"{mark.InstanceId}线");
                 }
 
                 ImGui.TableNextColumn();
@@ -147,20 +161,8 @@ public class MainUi : Window, IDisposable
         }
     }
 
-    private void DrawSettings()
+    private static void DrawSettings()
     {
-        ImGui.Text("请选择大区:");
-        using (ImRaii.PushIndent())
-        {
-            if (ImGuiWidget.DataCenterSelectCombo(ref selectedDataCenter, out var 大区名))
-            {
-                Plugin.Config.大区名 = 大区名;
-                Plugin.Config.Marks.Clear();
-                selectedServer = 0;
-                Plugin.Config.SaveConfig();
-            }
-        }
-
         ImGui.Text("扩散频道设置:");
         using (ImRaii.PushIndent())
             ImGuiWidget.ChatChannelCombo();
