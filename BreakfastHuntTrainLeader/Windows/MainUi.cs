@@ -33,14 +33,24 @@ public class MainUi : Window, IDisposable
         if (!initialized)
         {
             var pc = DService.ClientState.LocalPlayer;
-            if (pc == null || pc.CurrentWorld.GameData == null || pc.CurrentWorld.GameData.DataCenter.Value == null) return;
+            if (pc?.CurrentWorld.GameData?.DataCenter.Value == null) return;
             var dataCenter = pc.CurrentWorld.GameData.DataCenter.Value.Name.RawString;
-            Plugin.Config.大区名 = dataCenter;
-            Plugin.Config.SaveConfig();
+
             initialized = true;
+            if (Plugin.Config.大区名 != dataCenter)
+            {
+                Plugin.Config.Marks.Clear();
+                Plugin.Config.大区名 = dataCenter;
+                Plugin.Config.SaveConfig();
+            }
         }
 
-        using var disabled = ImRaii.Disabled(Plugin.Config.大区名 != "莫古力" && Plugin.Config.大区名 != "豆豆柴");
+        if (Plugin.Config.大区名 != "莫古力" && Plugin.Config.大区名 != "豆豆柴")
+        {
+            ImGui.TextColored(new(255,0,0,255) ,"本插件为莫古力区和豆豆柴区特供，用于早餐S车带车，其他区无使用本插件的需求。");
+            return;
+        }
+
         if (ImGui.BeginTabBar("##tabBar"))
         {
             if (ImGui.BeginTabItem("怪物列表"))
