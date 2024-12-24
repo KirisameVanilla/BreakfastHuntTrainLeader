@@ -51,21 +51,12 @@ public class MainUi : Window, IDisposable
             return;
         }
 
-        if (ImGui.BeginTabBar("##tabBar"))
+        using (ImRaii.TabBar("##tabBar"))
         {
-            if (ImGui.BeginTabItem("怪物列表"))
-            {
+            using (ImRaii.TabItem("怪物列表"))
                 DrawMarks();
-                ImGui.EndTabItem();
-            }
-
-            if (ImGui.BeginTabItem("设置"))
-            {
+            using (ImRaii.TabItem("设置"))
                 DrawSettings();
-                ImGui.EndTabItem();
-            }
-
-            ImGui.EndTabBar();
         }
     }
 
@@ -74,7 +65,7 @@ public class MainUi : Window, IDisposable
         if (ImGui.Checkbox("编辑模式", ref Plugin.Config.编辑模式))
             Plugin.Config.SaveConfig();
         var counter = 0;
-        if (ImGui.BeginTable("Marks", 6, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
+        using (ImRaii.Table("Marks", 6, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
         {
             ImGui.TableSetupColumn("序号", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("服务器", ImGuiTableColumnFlags.WidthStretch);
@@ -117,7 +108,7 @@ public class MainUi : Window, IDisposable
                 }
 
                 ImGui.TableNextColumn();
-                if (ImGuiOm.ButtonIcon($"{counter}FlagMark", FontAwesomeIcon.Flag, useStaticFont:true))
+                if (ImGuiOm.ButtonIcon($"{counter}FlagMark", FontAwesomeIcon.Flag, useStaticFont: true))
                     if (mark.FlagMark())
                         HelpersOm.NotificationSuccess("已标记", "BreakfastHuntTrainLeader");
                     else
@@ -167,7 +158,6 @@ public class MainUi : Window, IDisposable
                     }
                 }
             }
-            ImGui.EndTable();
         }
     }
 
@@ -201,9 +191,7 @@ public class MainUi : Window, IDisposable
             }
 
             ImGui.Text("分线模板:");
-            ImGuiWidget.HelpMarker("""
-                                   {2}: 分线显示控制的内容。若怪物未设置分线，即为0线，则本项不会显示在扩散中
-                                   """);
+            ImGuiWidget.HelpMarker("{2}: 分线显示控制的内容。若怪物未设置分线，即为0线，则本项不会显示在扩散中");
             using (ImRaii.PushIndent())
             {
                 ImGui.InputText("##分线模板", ref Plugin.Config.分线模板, 256);
