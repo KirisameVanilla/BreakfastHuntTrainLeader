@@ -33,8 +33,8 @@ public class MainUi : Window, IDisposable
         if (!initialized)
         {
             var pc = DService.ClientState.LocalPlayer;
-            if (pc?.CurrentWorld.GameData?.DataCenter.Value == null) return;
-            var dataCenter = pc.CurrentWorld.GameData.DataCenter.Value.Name.RawString;
+            if (pc?.CurrentWorld.Value.DataCenter.Value == null) return;
+            var dataCenter = pc.CurrentWorld.Value.DataCenter.Value.Name.ExtractText();
 
             initialized = true;
             if (Plugin.Config.大区名 != dataCenter)

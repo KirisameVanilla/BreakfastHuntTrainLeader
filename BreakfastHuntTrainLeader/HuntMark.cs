@@ -15,7 +15,7 @@ public class HuntMark
     public string Server => ImGuiWidget.大区[Plugin.Config.大区名][ServerIndex];
     public string Instance => InstanceId == 0 ? string.Empty : Plugin.Config.分线模板.Format("","",InstanceId.SEChar());
     public Vector2 Position { get; set; }
-    [JsonIgnore] public string? Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value?.Name.RawString;
+    [JsonIgnore] public string? Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value.Name.ExtractText();
     [JsonIgnore] public Vector2 MapPos => HelpersOm.WorldToMap(Position, ExcelHelper.Maps[MapId]);
 
     public HuntMark(int index)
@@ -37,7 +37,7 @@ public class HuntMark
     public void Relay()
     {
         if (DService.ClientState.LocalPlayer == null || !FlagMark()) return;
-        if (ExcelHelper.Worlds[DService.ClientState.LocalPlayer.CurrentWorld.Id].Name.RawString == Server)
+        if (ExcelHelper.Worlds[DService.ClientState.LocalPlayer.CurrentWorld.RowId].Name.ExtractText() == Server)
             foreach (var command in Plugin.Config.RelayCommands)
                 Plugin.Tasks.Enqueue(() => 
                                          ChatHelper.Instance.SendMessage(command + " " + Plugin.Config.同服扩散模板.Format(Instance)));
