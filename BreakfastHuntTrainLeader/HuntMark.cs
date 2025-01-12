@@ -13,7 +13,7 @@ public class HuntMark
     public uint InstanceId { get; set; } = 0;
     public uint MapId { get; set; } = 0;
     public string Server => ImGuiWidget.大区[Plugin.Config.大区名][ServerIndex];
-    public string Instance => InstanceId == 0 ? string.Empty : Plugin.Config.分线模板.Format("","",InstanceId.SEChar());
+    public string Instance => InstanceId == 0 ? string.Empty : Plugin.Config.分线模板.Format("","",InstanceId.ToSEChar());
     public Vector2 Position { get; set; }
     [JsonIgnore] public string? Territory => ExcelHelper.Zones[TerritoryId].PlaceName.Value.Name.ExtractText();
     [JsonIgnore] public Vector2 MapPos => HelpersOm.WorldToMap(Position, ExcelHelper.Maps[MapId]);
