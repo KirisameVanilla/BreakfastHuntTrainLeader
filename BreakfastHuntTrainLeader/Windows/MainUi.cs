@@ -53,15 +53,15 @@ public class MainUi : Window, IDisposable
 
         using (ImRaii.TabBar("##tabBar"))
         {
-            using (ImRaii.TabItem("怪物列表"))
-                DrawMarks();
-            using (ImRaii.TabItem("设置"))
-                DrawSettings();
+            DrawMarks();
+            DrawSettings();
         }
     }
 
     private void DrawMarks()
     {
+        using var tabMarks = ImRaii.TabItem("怪物列表");
+        if (!tabMarks) return;
         if (ImGui.Checkbox("编辑模式", ref Plugin.Config.编辑模式))
             Plugin.Config.SaveConfig();
         var counter = 0;
@@ -163,6 +163,8 @@ public class MainUi : Window, IDisposable
 
     private static void DrawSettings()
     {
+        using var tabSettings = ImRaii.TabItem("设置");
+        if (!tabSettings) return;
         ImGui.Text("扩散频道设置:");
         using (ImRaii.PushIndent())
             ImGuiWidget.ChatChannelCombo();
