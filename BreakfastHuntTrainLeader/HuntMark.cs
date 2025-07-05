@@ -27,7 +27,7 @@ public class HuntMark
     public unsafe bool InitByFlag()
     {
         var agentMap = AgentMap.Instance();
-        if (agentMap == null || agentMap->IsFlagMarkerSet == 0) return false;
+        if (agentMap == null || !agentMap->IsFlagMarkerSet) return false;
         Position = new(agentMap->FlagMapMarker.XFloat, agentMap->FlagMapMarker.YFloat);
         TerritoryId = agentMap->FlagMapMarker.TerritoryId;
         MapId = agentMap->FlagMapMarker.MapId;
@@ -40,11 +40,11 @@ public class HuntMark
         if (ExcelHelper.Worlds[DService.ClientState.LocalPlayer.CurrentWorld.RowId].Name.ExtractText() == Server)
             foreach (var command in Plugin.Config.RelayCommands)
                 Plugin.Tasks.Enqueue(() => 
-                                         ChatHelper.Instance.SendMessage(command + " " + Plugin.Config.同服扩散模板.Format(Instance)));
+                                         ChatHelper.SendMessage(command + " " + Plugin.Config.同服扩散模板.Format(Instance)));
         else
             foreach (var command in Plugin.Config.RelayCommands)
                 Plugin.Tasks.Enqueue(() => 
-                                         ChatHelper.Instance.SendMessage(command + " " + Plugin.Config.跨服扩散模板.Format(Instance, Server)));
+                                         ChatHelper.SendMessage(command + " " + Plugin.Config.跨服扩散模板.Format(Instance, Server)));
     }
 
     public unsafe bool FlagMark()

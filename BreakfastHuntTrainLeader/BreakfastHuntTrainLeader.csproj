@@ -2,8 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <AssemblyVersion>1.0.0.2</AssemblyVersion>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <AssemblyVersion>1.0.1.1</AssemblyVersion>
+        <TargetFramework>net9.0-windows</TargetFramework>
         <PlatformTarget>x64</PlatformTarget>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Authors>KirisameVanilla</Authors>
@@ -17,7 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-	  <PackageReference Include="DalamudPackager" Version="11.0.0" MakeZip="true" />
+	  <PackageReference Include="DalamudPackager" Version="12.0.0" MakeZip="true" />
 	  <ProjectReference Include="..\OmenTools\OmenTools.csproj" />
         
         <Reference Include="FFXIVClientStructs">
@@ -42,6 +42,10 @@
         </Reference>
         <Reference Include="Newtonsoft.Json">
             <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="InteropGenerator.Runtime">
+            <HintPath>$(DalamudLibPath)InteropGenerator.Runtime.dll</HintPath>
             <Private>false</Private>
         </Reference>
     </ItemGroup>

@@ -15,12 +15,12 @@ public class ExcelHelper
     #region Lazy
 
     private static readonly Lazy<Dictionary<uint, TerritoryType>> zones =
-        new(() => LuminaCache.Get<TerritoryType>()
+        new(() => LuminaGetter.Get<TerritoryType>()
                              .Where(x => x.PlaceName.RowId > 0)
                              .ToDictionary(x => x.RowId, x => x));
 
     private static readonly Lazy<Dictionary<uint, World>> worlds =
-        new(() => LuminaCache.Get<World>()
+        new(() => LuminaGetter.Get<World>()
                              .Where(x => x.DataCenter.ValueNullable != null &&
                                          (x.DataCenter.ValueNullable?.Region ?? 0) != 0 &&
                                          !string.IsNullOrWhiteSpace(x.DataCenter.Value.Name.ExtractText()) &&
@@ -33,7 +33,7 @@ public class ExcelHelper
                              .ToDictionary(x => x.RowId, x => x));
 
     private static readonly Lazy<Dictionary<uint, Map>> maps =
-        new(() => LuminaCache.Get<Map>()
+        new(() => LuminaGetter.Get<Map>()
                              .Where(x => x.PlaceName.RowId > 0)
                              .ToDictionary(x => x.RowId, x => x));
 
